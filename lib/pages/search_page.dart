@@ -6,8 +6,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final PageController pageController = new PageController(initialPage: 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

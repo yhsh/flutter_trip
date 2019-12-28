@@ -6,14 +6,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController pageController = new PageController(initialPage: 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Center(
-        child: Text("首页"),
-      )
-    );
+        body: Center(
+      child: Text("首页"),
+    ));
   }
 }
