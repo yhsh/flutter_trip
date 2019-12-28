@@ -10,15 +10,15 @@ class TabNavigator extends StatefulWidget {
 }
 
 class _TabNavigatorState extends State<TabNavigator> {
-  final PageController _controller = new PageController(
+  final _defaultColor = Colors.grey;
+  final _activeColor = Colors.blue;
+  int _currentIndex = 0;
+  final PageController _controller = PageController(
     initialPage: 0,
   );
 
   @override
   Widget build(BuildContext context) {
-    final _defaultColor = Colors.grey;
-    final _pressColor = Colors.blue;
-    int _currentIndex = 0;
     return Scaffold(
         body: PageView(controller: _controller, children: <Widget>[
           HomePage(),
@@ -33,7 +33,6 @@ class _TabNavigatorState extends State<TabNavigator> {
               setState(() {
                 _currentIndex = index;
               });
-              print("打印位置" + _currentIndex.toString());
             },
             type: BottomNavigationBarType.fixed,
             items: [
@@ -44,13 +43,13 @@ class _TabNavigatorState extends State<TabNavigator> {
                   ),
                   activeIcon: Icon(
                     Icons.home,
-                    color: _pressColor,
+                    color: _activeColor,
                   ),
                   title: Text(
                     "首页",
                     style: TextStyle(
                         color:
-                            _currentIndex != 0 ? _defaultColor : _pressColor),
+                            _currentIndex != 0 ? _defaultColor : _activeColor),
                   )),
               BottomNavigationBarItem(
                   icon: Icon(
@@ -59,13 +58,13 @@ class _TabNavigatorState extends State<TabNavigator> {
                   ),
                   activeIcon: Icon(
                     Icons.search,
-                    color: _pressColor,
+                    color: _activeColor,
                   ),
                   title: Text(
                     "搜索",
                     style: TextStyle(
                         color:
-                            _currentIndex != 1 ? _defaultColor : _pressColor),
+                            _currentIndex != 1 ? _defaultColor : _activeColor),
                   )),
               BottomNavigationBarItem(
                   icon: Icon(
@@ -74,13 +73,13 @@ class _TabNavigatorState extends State<TabNavigator> {
                   ),
                   activeIcon: Icon(
                     Icons.camera_alt,
-                    color: _pressColor,
+                    color: _activeColor,
                   ),
                   title: Text(
                     "旅拍",
                     style: TextStyle(
                         color:
-                            _currentIndex != 2 ? _defaultColor : _defaultColor),
+                            _currentIndex != 2 ? _defaultColor : _activeColor),
                   )),
               BottomNavigationBarItem(
                   icon: Icon(
@@ -89,13 +88,13 @@ class _TabNavigatorState extends State<TabNavigator> {
                   ),
                   activeIcon: Icon(
                     Icons.account_circle,
-                    color: _pressColor,
+                    color: _activeColor,
                   ),
                   title: Text(
                     "我的",
                     style: TextStyle(
                         color:
-                            _currentIndex != 3 ? _defaultColor : _pressColor),
+                            _currentIndex != 3 ? _defaultColor : _activeColor),
                   ))
             ]));
   }
