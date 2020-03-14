@@ -16,24 +16,35 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-      children: <Widget>[
-        Container(
-          height: 200,
-          child: Swiper(
-            itemCount: _imageUrl.length,
-            autoplay: true,
-            itemBuilder: (BuildContext context, int index) {
-              return Image.network(
-                _imageUrl[index],
-                fit: BoxFit.fill,
-              );
-            },
-            pagination: SwiperPagination(),
-          ),
-        )
-      ],
-    )));
+      body: MediaQuery.removePadding(
+        //移除状态栏关键属性
+        removeTop: true,
+        context: context,
+        child: ListView(
+          children: <Widget>[
+            Container(
+              height: 170,
+              child: Swiper(
+                itemCount: _imageUrl.length,
+                autoplay: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.network(
+                    _imageUrl[index],
+                    fit: BoxFit.fill,
+                  );
+                },
+                pagination: SwiperPagination(),
+              ),
+            ),
+            Container(
+              height: 800,
+              child: ListTile(
+                title: Text("我是标题栏"),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
