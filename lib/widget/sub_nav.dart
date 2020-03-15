@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/widget/webview.dart';
 
+//底部活动分类卡片
 class SubNav extends StatelessWidget {
   final List<CommonModel> subNavList;
 

@@ -6,8 +6,10 @@ import 'package:flutter_trip/dao/HomeDao.dart';
 import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
+import 'package:flutter_trip/model/sales_box_model.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
+import 'package:flutter_trip/widget/sales_box.dart';
 import 'package:flutter_trip/widget/sub_nav.dart';
 
 const APP_BAR_OFFSET = 100;
@@ -28,7 +30,8 @@ class _HomePageState extends State<HomePage> {
   List<CommonModel> localNavList = [];
   GridNavModel gridNavModel;
   List<CommonModel> subNavList = [];
-  String resultString = "";
+  SalesBoxModel salesBoxModel;
+//  String resultString = "";
 
   _onScroller(offset) {
 //    print(offset);
@@ -65,14 +68,15 @@ class _HomePageState extends State<HomePage> {
     try {
       HomeModel homeModel = await HomeDao.fetch();
       setState(() {
-        resultString = json.encode(homeModel.config);
+//        resultString = json.encode(homeModel.config);
         localNavList = homeModel.localNavList;
         gridNavModel = homeModel.gridNav;
         subNavList = homeModel.subNavList;
+        salesBoxModel = homeModel.salesBox;
       });
     } catch (e) {
       setState(() {
-        resultString = e.toString();
+//        resultString = e.toString();
         print(e.toString());
       });
     }
@@ -122,10 +126,13 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                           padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
                           child: SubNav(subNavList: subNavList)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+                          child: SalesBox(salesBox: salesBoxModel)),
                       Container(
                         height: 800,
                         child: ListTile(
-                          title: Text(resultString),
+                          title: Text("底部测试数据"),
                         ),
                       )
                     ],
