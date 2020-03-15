@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_trip/dao/HomeDao.dart';
 import 'package:flutter_trip/model/common_model.dart';
+import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
+import 'package:flutter_trip/widget/grid_nav.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
 
 const APP_BAR_OFFSET = 100;
@@ -23,6 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   double appBarAlpha = 0;
   List<CommonModel> localNavList = [];
+  GridNavModel gridNavModel;
   String resultString = "";
 
   _onScroller(offset) {
@@ -62,6 +65,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         resultString = json.encode(homeModel.config);
         localNavList = homeModel.localNavList;
+        gridNavModel = homeModel.gridNav;
       });
     } catch (e) {
       setState(() {
@@ -107,9 +111,11 @@ class _HomePageState extends State<HomePage> {
                       ),
 //                  GridNav(gridNavModel: null, name: "显示数据666"),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-                        child: LocalNav(localNavList: localNavList),
-                      ),
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: LocalNav(localNavList: localNavList)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+                          child: GridNav(gridNavModel: gridNavModel)),
                       Container(
                         height: 800,
                         child: ListTile(

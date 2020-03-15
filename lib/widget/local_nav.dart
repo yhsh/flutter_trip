@@ -23,7 +23,7 @@ class LocalNav extends StatelessWidget {
   Widget _item(BuildContext context, CommonModel model) {
     return GestureDetector(
       onTap: () {
-        print("点击了${model.title}+:${model.url}");
+        print("点击了${model.title}:${model.url}");
         Navigator.push(
             context,
             MaterialPageRoute(

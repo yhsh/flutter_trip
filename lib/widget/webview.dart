@@ -8,7 +8,6 @@ const CACHE_URLS = [
   "m.ctrip.com/",
   "m.ctrip.com/html5/",
   "m.ctrip.com/html5",
-  "m.ctrip.com/webapp/you/",
   "m.ctrip.com/html5/you/"
 ];
 
@@ -82,11 +81,11 @@ class _WebViewState extends State<WebView> {
 
   @override
   void dispose() {
-    super.dispose();
     _onStateChanged.cancel();
     _onUrlChanged.cancel();
     _onHttpError.cancel();
     webViewReference.dispose();
+    super.dispose();
   }
 
   @override
@@ -129,12 +128,19 @@ class _WebViewState extends State<WebView> {
       );
     }
     return Container(
+      //解决webView返回按钮挡住状态栏的方法
+      color: backgroundColor,
+      padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
       child: FractionallySizedBox(
-        //撑满全屏的方法
+        //撑满父布局的宽度
         widthFactor: 1,
         child: Stack(
           children: <Widget>[
             GestureDetector(
+              onTap: () {
+                //返回上一页
+                Navigator.pop(context);
+              },
               child: Container(
                 margin: EdgeInsets.only(left: 10),
                 child: Icon(
