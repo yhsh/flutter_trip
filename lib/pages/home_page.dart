@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_trip/dao/HomeDao.dart';
+import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
+import 'package:flutter_trip/widget/local_nav.dart';
 
 const APP_BAR_OFFSET = 100;
 
@@ -20,10 +22,11 @@ class _HomePageState extends State<HomePage> {
   ];
 
   double appBarAlpha = 0;
+  List<CommonModel> localNavList = [];
   String resultString = "";
 
   _onScroller(offset) {
-    print(offset);
+//    print(offset);
     if (offset > 100) {
       offset = 100;
     } else if (offset <= 0) {
@@ -58,10 +61,12 @@ class _HomePageState extends State<HomePage> {
       HomeModel homeModel = await HomeDao.fetch();
       setState(() {
         resultString = json.encode(homeModel.config);
+        localNavList = homeModel.localNavList;
       });
     } catch (e) {
       setState(() {
         resultString = e.toString();
+        print(e.toString());
       });
     }
   }
@@ -69,59 +74,65 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color(0xfff2f2f2),
         body: Stack(
-      children: <Widget>[
-        MediaQuery.removePadding(
-            //移除状态栏关键属性
-            removeTop: true,
-            context: context,
-            //监听ListView滚动的方法
-            child: NotificationListener(
-              onNotification: (scrollNotification) {
-                if (scrollNotification is ScrollUpdateNotification &&
-                    scrollNotification.depth == 0) {
-                  _onScroller(scrollNotification.metrics.pixels);
-                }
-              },
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    height: 170,
-                    child: Swiper(
-                      itemCount: _imageUrl.length,
-                      autoplay: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Image.network(
-                          _imageUrl[index],
-                          fit: BoxFit.fill,
-                        );
-                      },
-                      pagination: SwiperPagination(),
-                    ),
+          children: <Widget>[
+            MediaQuery.removePadding(
+                //移除状态栏关键属性
+                removeTop: true,
+                context: context,
+                //监听ListView滚动的方法
+                child: NotificationListener(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollUpdateNotification &&
+                        scrollNotification.depth == 0) {
+                      _onScroller(scrollNotification.metrics.pixels);
+                    }
+                  },
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        height: 170,
+                        child: Swiper(
+                          itemCount: _imageUrl.length,
+                          autoplay: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Image.network(
+                              _imageUrl[index],
+                              fit: BoxFit.fill,
+                            );
+                          },
+                          pagination: SwiperPagination(),
+                        ),
+                      ),
+//                  GridNav(gridNavModel: null, name: "显示数据666"),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                        child: LocalNav(localNavList: localNavList),
+                      ),
+                      Container(
+                        height: 800,
+                        child: ListTile(
+                          title: Text(resultString),
+                        ),
+                      )
+                    ],
                   ),
-                  Container(
-                    height: 800,
-                    child: ListTile(
-                      title: Text(resultString),
-                    ),
-                  )
-                ],
-              ),
-            )),
-        Opacity(
-          opacity: appBarAlpha,
-          child: Container(
-            height: 80,
-            decoration: BoxDecoration(color: Colors.greenAccent),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: Text("首页"),
+                )),
+            Opacity(
+              opacity: appBarAlpha,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(color: Colors.greenAccent),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text("首页"),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 }
