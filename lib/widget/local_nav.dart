@@ -13,6 +13,7 @@ class LocalNav extends StatelessWidget {
     localNavList.forEach((model) {
       items.add(_item(context, model));
     });
+    //横向排列
     return Row(
       //平均分布
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -22,8 +23,10 @@ class LocalNav extends StatelessWidget {
 
   Widget _item(BuildContext context, CommonModel model) {
     return GestureDetector(
+      //点击事件触发的方法
       onTap: () {
         print("点击了${model.title}:${model.url}");
+        //跳转页面的路由组件
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -33,6 +36,7 @@ class LocalNav extends StatelessWidget {
                       hideAppBar: model.hideAppBar,
                     )));
       },
+      //上下竖直排列
       child: Column(
         children: <Widget>[
           Image.network(

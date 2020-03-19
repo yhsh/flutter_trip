@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_trip/dao/HomeDao.dart';
@@ -8,9 +6,11 @@ import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
 import 'package:flutter_trip/model/sales_box_model.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
+import 'package:flutter_trip/widget/loading_container.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
 import 'package:flutter_trip/widget/sales_box.dart';
 import 'package:flutter_trip/widget/sub_nav.dart';
+import 'package:flutter_trip/widget/webview.dart';
 
 const APP_BAR_OFFSET = 100;
 
@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<CommonModel> bannerList;
   List _imageUrl = [
     'http://pages.ctrip.com/commerce/promote/20180718/yxzy/img/640sygd.jpg',
     'https://dimg04.c-ctrip.com/images/700u0r000000gxvb93E54_810_235_85.jpg',
@@ -31,10 +32,9 @@ class _HomePageState extends State<HomePage> {
   GridNavModel gridNavModel;
   List<CommonModel> subNavList = [];
   SalesBoxModel salesBoxModel;
-//  String resultString = "";
+  bool _loading = true;
 
   _onScroller(offset) {
-//    print(offset);
     if (offset > 100) {
       offset = 100;
     } else if (offset <= 0) {
@@ -48,51 +48,47 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadData();
+    _handleRefresh();
   }
 
   //加载首页数据的方法
-  /* void loadData() {
-    HomeDao.fetch().then((result) {
-      setState(() {
-        resultString = json.encode(result);
-      });
-    }).catchError((e) {
-      setState(() {
-        resultString = e.toString();
-      });
-    });
-  } */
-  //加载首页数据的方法
-  void loadData() async {
+  Future<Null> _handleRefresh() async {
     try {
       HomeModel homeModel = await HomeDao.fetch();
       setState(() {
-//        resultString = json.encode(homeModel.config);
         localNavList = homeModel.localNavList;
         gridNavModel = homeModel.gridNav;
         subNavList = homeModel.subNavList;
         salesBoxModel = homeModel.salesBox;
+        bannerList = homeModel.bannerList;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
-//        resultString = e.toString();
         print(e.toString());
+        setState(() {
+          _loading = false;
+        });
       });
     }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xfff2f2f2),
-        body: Stack(
+      backgroundColor: Color(0xfff2f2f2),
+      body: LoadingContainer(
+        isLoading: _loading,
+        child: Stack(
           children: <Widget>[
             MediaQuery.removePadding(
-                //移除状态栏关键属性
-                removeTop: true,
-                context: context,
-                //监听ListView滚动的方法
+              //移除状态栏关键属性
+              removeTop: true,
+              context: context,
+              //监听ListView滚动的方法
+              child: RefreshIndicator(
+                onRefresh: _handleRefresh,
                 child: NotificationListener(
                   onNotification: (scrollNotification) {
                     if (scrollNotification is ScrollUpdateNotification &&
@@ -100,58 +96,92 @@ class _HomePageState extends State<HomePage> {
                       _onScroller(scrollNotification.metrics.pixels);
                     }
                   },
-                  child: ListView(
-                    children: <Widget>[
-                      Container(
-                        height: 170,
-                        child: Swiper(
-                          itemCount: _imageUrl.length,
-                          autoplay: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Image.network(
-                              _imageUrl[index],
-                              fit: BoxFit.fill,
-                            );
-                          },
-                          pagination: SwiperPagination(),
-                        ),
-                      ),
-//                  GridNav(gridNavModel: null, name: "显示数据666"),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-                          child: LocalNav(localNavList: localNavList)),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                          child: GridNav(gridNavModel: gridNavModel)),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                          child: SubNav(subNavList: subNavList)),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                          child: SalesBox(salesBox: salesBoxModel)),
-                      Container(
-                        height: 800,
-                        child: ListTile(
-                          title: Text("底部测试数据"),
-                        ),
-                      )
-                    ],
-                  ),
-                )),
-            Opacity(
-              opacity: appBarAlpha,
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(color: Colors.greenAccent),
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Text("首页"),
-                  ),
+                  child: _listView,
                 ),
               ),
             ),
+            _appBar,
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget get _appBar {
+    return Opacity(
+      opacity: appBarAlpha,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(color: Colors.greenAccent),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text("首页"),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget get _listView {
+    return ListView(
+      children: <Widget>[
+        _banner,
+//                  GridNav(gridNavModel: null, name: "显示数据666"),
+        Padding(
+            padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+            child: LocalNav(localNavList: localNavList)),
+        Padding(
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+            child: GridNav(gridNavModel: gridNavModel)),
+        Padding(
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+            child: SubNav(subNavList: subNavList)),
+        Padding(
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+            child: SalesBox(salesBox: salesBoxModel)),
+        Container(
+          height: 800,
+          child: ListTile(
+            title: Text("底部测试数据"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget get _banner {
+    return Container(
+      height: 170,
+      child: Swiper(
+        itemCount: bannerList.length,
+        autoplay: true,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              //跳转点击的页面
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    CommonModel model = bannerList[index];
+                    return WebView(
+                      url: model.url,
+                      title: model.title,
+                      hideAppBar: model.hideAppBar,
+                    );
+                  },
+                ),
+              );
+            },
+            child: Image.network(
+              bannerList[index].icon,
+              fit: BoxFit.fill,
+            ),
+          );
+        },
+        pagination: SwiperPagination(),
+      ),
+    );
   }
 }
