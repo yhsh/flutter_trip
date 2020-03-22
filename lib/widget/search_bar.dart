@@ -59,6 +59,7 @@ class _SearchBarState extends State<SearchBar> {
         children: <Widget>[
           _warpTap(
               Container(
+                padding: EdgeInsets.fromLTRB(6, 5, 10, 5),
                 child: widget?.hideLeft ?? false
                     ? null
                     : Icon(
@@ -86,7 +87,45 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 
-  _genHomeSearch() {}
+  _genHomeSearch() {
+    return Container(
+      child: Row(
+        children: <Widget>[
+          _warpTap(
+              Container(
+                  padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "上海",
+                        style: TextStyle(color: _homeFontColor(), fontSize: 14),
+                      ),
+                      Icon(
+                        Icons.expand_more,
+                        color: _homeFontColor(),
+                        size: 22,
+                      )
+                    ],
+                  )),
+              widget.leftButtonClick),
+          Expanded(
+            flex: 1,
+            child: _inputBox(),
+          ),
+          _warpTap(
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 15, 5),
+                child: Icon(
+                  Icons.comment,
+                  color: _homeFontColor(),
+                  size: 24,
+                ),
+              ),
+              widget.rightButtonClick)
+        ],
+      ),
+    );
+  }
 
   _warpTap(Widget child, void Function() callBack) {
     return GestureDetector(
@@ -130,7 +169,7 @@ class _SearchBarState extends State<SearchBar> {
                           color: Colors.black,
                           fontWeight: FontWeight.w300),
                       decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 13),
                           border: InputBorder.none,
                           hintText: widget.hint ?? "",
                           hintStyle: TextStyle(fontSize: 15)),
@@ -145,7 +184,28 @@ class _SearchBarState extends State<SearchBar> {
                           ),
                         ),
                       ),
-                      widget.inputBoxClick))
+                      widget.inputBoxClick)),
+          !showClear
+              ? _warpTap(
+                  Icon(
+                    Icons.mic,
+                    size: 22,
+                    color: widget.searchBarType == SearchBarType.normal
+                        ? Colors.blue
+                        : Colors.grey,
+                  ),
+                  widget.speakClick)
+              : _warpTap(
+                  Icon(
+                    Icons.clear,
+                    size: 22,
+                    color: Colors.grey,
+                  ), () {
+                  setState(() {
+                    _controller.clear();
+                  });
+                  _onChanged("");
+                })
         ],
       ),
     );
@@ -164,5 +224,11 @@ class _SearchBarState extends State<SearchBar> {
     if (widget.onChanged != null) {
       _onChanged(text);
     }
+  }
+
+  _homeFontColor() {
+    return widget.searchBarType == SearchBarType.homeLight
+        ? Colors.black54
+        : Colors.white;
   }
 }
