@@ -22,7 +22,9 @@ class _TabNavigatorState extends State<TabNavigator> {
     return Scaffold(
         body: PageView(controller: _controller, children: <Widget>[
           HomePage(),
-          SearchPage(),
+          SearchPage(
+            hideLeft: true,
+          ),
           TravelPage(),
           MyPage()
         ]),

@@ -65,7 +65,7 @@ class _SearchBarState extends State<SearchBar> {
                     : Icon(
                         Icons.arrow_back_ios,
                         color: Colors.grey,
-                        size: 26,
+                        size: 22,
                       ),
               ),
               widget.leftButtonClick),
@@ -165,7 +165,7 @@ class _SearchBarState extends State<SearchBar> {
                       onChanged: _onChanged,
                       autofocus: true,
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 15,
                           color: Colors.black,
                           fontWeight: FontWeight.w300),
                       decoration: InputDecoration(
