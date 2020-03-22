@@ -5,6 +5,7 @@ import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
 import 'package:flutter_trip/model/sales_box_model.dart';
+import 'package:flutter_trip/pages/search_page.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
 import 'package:flutter_trip/widget/loading_container.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
@@ -204,7 +205,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _jumpSearch() {}
+  _jumpSearch() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return SearchPage(
+        hint: "网红打卡地 景点 酒店 美食",
+      );
+    }));
+  }
 
   _jumpSpeak() {}
 }
