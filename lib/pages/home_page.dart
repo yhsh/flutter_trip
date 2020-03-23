@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
-          height: appBarAlpha > 02 ? 0.5 : 0,
+          height: appBarAlpha > 0.2 ? 0.5 : 0,
           decoration: BoxDecoration(
               boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 0.5)]),
         )
@@ -147,7 +147,6 @@ class _HomePageState extends State<HomePage> {
     return ListView(
       children: <Widget>[
         _banner,
-//                  GridNav(gridNavModel: null, name: "显示数据666"),
         Padding(
             padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
             child: LocalNav(localNavList: localNavList)),
