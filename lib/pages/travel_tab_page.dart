@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_trip/dao/travel_dao.dart';
 import 'package:flutter_trip/model/travel_model.dart';
+import 'package:flutter_trip/widget/loading_container.dart';
 import 'package:flutter_trip/widget/webview.dart';
 
 const _TRAVEL_URL =
     'https://m.ctrip.com/restapi/soa2/16189/json/searchTripShootListForHomePageV2?_fxpcqlniredt=09031097411147091017&__gw_appid=99999999&__gw_ver=1.0&__gw_from=10650013707&__gw_platform=H5';
 const PAGE_SIZE = 10;
+//默认显示加载框
+bool _loading = true;
+//下拉加载更多用到的
+ScrollController _scrollController = ScrollController();
 
 //tab下面的分类页面
 class TravelTabPage extends StatefulWidget {
@@ -29,6 +34,12 @@ class _TravelTabPageState extends State<TravelTabPage>
   void initState() {
     super.initState();
     _loadData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _loadData(loadMore: true);
+      }
+    });
   }
 
   @override
@@ -39,25 +50,37 @@ class _TravelTabPageState extends State<TravelTabPage>
   @override
   Widget build(BuildContext context) {
     //移除顶部空白部分
-    return MediaQuery.removePadding(
-        removeTop: true,
-        context: context,
-        child: Scaffold(
-            body: StaggeredGridView.countBuilder(
-          crossAxisCount: 4,
-          itemCount: travelItems?.length ?? 0,
-          itemBuilder: (BuildContext context, int index) => _TravelItem(
-            index: index,
-            item: travelItems[index],
-          ),
-          staggeredTileBuilder: (int index) => new StaggeredTile.fit(2),
-        )));
+    return LoadingContainer(
+      isLoading: _loading,
+      child: RefreshIndicator(
+          child: MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: Scaffold(
+                  body: StaggeredGridView.countBuilder(
+                controller: _scrollController,
+                crossAxisCount: 4,
+                itemCount: travelItems?.length ?? 0,
+                itemBuilder: (BuildContext context, int index) => _TravelItem(
+                  index: index,
+                  item: travelItems[index],
+                ),
+                staggeredTileBuilder: (int index) => new StaggeredTile.fit(2),
+              ))),
+          onRefresh: _handlerRefresh),
+    );
   }
 
-  void _loadData() {
+  void _loadData({loadMore = false}) {
+    if (loadMore) {
+      pageIndex++;
+    } else {
+      pageIndex = 1;
+    }
     TravelDao.fetch(widget.travelUrl ?? _TRAVEL_URL, widget.groupChannelCode,
             pageIndex, PAGE_SIZE)
         .then((TravelItemModel model) {
+      _loading = false;
       setState(() {
         List<TravelItem> items = _filterItems(model.resultList);
         if (travelItems != null) {
@@ -67,6 +90,7 @@ class _TravelTabPageState extends State<TravelTabPage>
         }
       });
     }).catchError((e) {
+      _loading = false;
       print("打印旅拍tab下面异常$e");
     });
   }
@@ -85,6 +109,12 @@ class _TravelTabPageState extends State<TravelTabPage>
   //切换tab的时候禁止重新绘制
   @override
   bool get wantKeepAlive => true;
+
+  //下拉刷新
+  Future<Null> _handlerRefresh() async {
+    _loadData();
+    return null;
+  }
 }
 
 class _TravelItem extends StatelessWidget {
