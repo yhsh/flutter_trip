@@ -1,11 +1,11 @@
-class TravelModel {
+class TravelItemModel {
 //https://m.ctrip.com/restapi/soa2/16189/json/searchTripShootListForHomePageV2?_fxpcqlniredt=09031097411147091017&__gw_appid=99999999&__gw_ver=1.0&__gw_from=10650013707&__gw_platform=H5
   int totalCount;
   List<TravelItem> resultList;
 
-  TravelModel({this.totalCount, this.resultList});
+  TravelItemModel({this.totalCount, this.resultList});
 
-  TravelModel.fromJson(Map<String, dynamic> json) {
+  TravelItemModel.fromJson(Map<String, dynamic> json) {
     totalCount = json['totalCount'];
     if (json['resultList'] != null) {
       resultList = new List<TravelItem>();

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_trip/model/travel_model.dart';
+import 'package:flutter_trip/utils/log_util.dart';
 import 'package:http/http.dart' as http;
 
 ///旅拍页接口
@@ -23,7 +24,7 @@ var Params = {
 };
 
 class TravelDao {
-  static Future<TravelModel> fetch(
+  static Future<TravelItemModel> fetch(
       String url, String groupChannelCode, int pageIndex, int pageSize) async {
     Params['groupChannelCode'] = groupChannelCode;
     Map paramsMap = Params['pagePara'];
@@ -33,7 +34,8 @@ class TravelDao {
     if (response.statusCode == 200) {
       Utf8Decoder utf8decoder = Utf8Decoder();
       var result = json.decode(utf8decoder.convert(response.bodyBytes));
-      return TravelModel.fromJson(result);
+      LogUtil.d("打印旅拍服务器数据$result");
+      return TravelItemModel.fromJson(result);
     } else {
       throw Exception("请求服务器失败！");
     }

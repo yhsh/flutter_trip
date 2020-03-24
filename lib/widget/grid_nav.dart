@@ -9,16 +9,8 @@ class GridNav extends StatelessWidget {
 
   const GridNav({Key key, @required this.gridNavModel}) : super(key: key);
 
-//  @override
-//  _GridNavState createState() => _GridNavState();
-
   @override
   Widget build(BuildContext context) {
-//    return Container(
-//      decoration:
-//          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
-//      child: Column(children: _gridNavItems(context)),
-//    );
     return PhysicalModel(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(10),
@@ -146,20 +138,3 @@ class GridNav extends StatelessWidget {
     );
   }
 }
-
-//class _GridNavState extends State<GridNav> {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      child: Text(
-//        widget.name,
-//        style: TextStyle(
-//          color: Colors.greenAccent,
-//          decoration: TextDecoration.underline,
-//          fontSize: 30,
-//        ),
-//        textAlign: TextAlign.center,
-//      ),
-//    );
-//  }
-//}

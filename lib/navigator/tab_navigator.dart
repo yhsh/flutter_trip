@@ -17,17 +17,22 @@ class _TabNavigatorState extends State<TabNavigator> {
     initialPage: 0,
   );
 
+//physics: NeverScrollableScrollPhysics():禁止PageView滑动
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView(controller: _controller, children: <Widget>[
-          HomePage(),
-          SearchPage(
-            hideLeft: true,
-          ),
-          TravelPage(),
-          MyPage()
-        ]),
+        body: PageView(
+          controller: _controller,
+          children: <Widget>[
+            HomePage(),
+            SearchPage(
+              hideLeft: true,
+            ),
+            TravelPage(),
+            MyPage()
+          ],
+          physics: NeverScrollableScrollPhysics(),
+        ),
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
