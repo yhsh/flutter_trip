@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
         bannerList = homeModel.bannerList;
         length = bannerList.length;
         _loading = false;
+        print("打印图片地址：${bannerList[0].icon}");
       });
     } catch (e) {
       setState(() {
@@ -171,36 +172,38 @@ class _HomePageState extends State<HomePage> {
 
   Widget get _banner {
     return Container(
-      height: 170,
-      child: Swiper(
-        itemCount: length,
-        autoplay: true,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              //跳转点击的页面
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    CommonModel model = bannerList[index];
-                    return WebView(
-                      url: model.url,
-                      title: model.title,
-                      hideAppBar: model.hideAppBar,
-                    );
-                  },
+      //轮播图适配所有手机
+      child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Swiper(
+            itemCount: length,
+            autoplay: true,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  //跳转点击的页面
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        CommonModel model = bannerList[index];
+                        return WebView(
+                          url: model.url,
+                          title: model.title,
+                          hideAppBar: model.hideAppBar,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: Image.network(
+                  bannerList[index].icon,
+                  fit: BoxFit.fill,
                 ),
               );
             },
-            child: Image.network(
-              bannerList[index].icon,
-              fit: BoxFit.fill,
-            ),
-          );
-        },
-        pagination: SwiperPagination(),
-      ),
+            pagination: SwiperPagination(),
+          )),
     );
   }
 
